@@ -42,57 +42,55 @@ namespace selectcomponents {
         mvprintw(0, 0, "Use arrow keys to go up and down, Press enter to select a choice");
         refresh();
         print_menu(menu_win, highlight);
+        while(1){
 
-        while(1){   
-            c = wgetch(menu_win);
-            switch(c){   
-                case KEY_UP:
-                    if(highlight == 1)
-                        highlight = n_choices;
-                    else
-                        --highlight;
+            while(1){   
+                c = wgetch(menu_win);
+                switch(c){   
+                    case KEY_UP:
+                        if(highlight == 1)
+                            highlight = n_choices;
+                        else
+                            --highlight;
+                        break;
+                    case KEY_DOWN:
+                        if(highlight == n_choices)
+                            highlight = 1;
+                        else 
+                            ++highlight;
+                        break;
+                    case 10:
+                        choice = highlight;
+                        break;
+                    default:
+                        mvprintw(24, 0, "Charcter pressed is = %3d Hopefully it can be printed as '%c'", c, c);
+                        refresh();
+                        break;
+                }
+
+                print_menu(menu_win, highlight);
+                if(choice != 0){ // Enter choice elif
                     break;
-                case KEY_DOWN:
-                    if(highlight == n_choices)
-                        highlight = 1;
-                    else 
-                        ++highlight;
-                    break;
-                case 10:
-                    choice = highlight;
-                    break;
-                default:
-                    mvprintw(24, 0, "Charcter pressed is = %3d Hopefully it can be printed as '%c'", c, c);
-                    refresh();
-                    break;
+                }
             }
-
-            print_menu(menu_win, highlight);
-            if(choice != 0){ // Enter choice elif
-                break;
+            if(choice[choices - 1] == "Create Task"){
+                char taskname[100];
+                std::string home_dir = getenv("HOME");
+                std::ofstream ofs(home_dir+"/.config/alltodo", std::ios_base::app); // Open taskfile
+                mvprintw(24, 0, "What will this task be called? eg. Read Documentation on examplelib: ");
+                echo();
+                getstr(taskname);
+                ofs << "node:" << taskname << "\n"; // Write to taskfile
+                printw("\U00002714"); // Print the Unicode character
+                getch();
             }
         }
-        writeToFile();
         getch();
         clrtoeol();
         refresh();
         return 0;
     }
-
-    void writeToFile(){
-    if(choice[choices - 1] == "Create Task"){
-        char taskname[100];
-        std::string home_dir = getenv("HOME");
-        std::ofstream ofs(home_dir+"/.config/alltodo", std::ios_base::app); // Open taskfile
-        mvprintw(24, 0, "What will this task be called? eg. Read Documentation on examplelib: ");
-        echo();
-        getstr(taskname);
-        ofs << "node:" << taskname << "\n"; // Write to taskfile
-        printw("\U00002714"); // Print the Unicode character
-        getch();
-        selectTaskType();
-    }
-}
+    
 
     void print_menu(WINDOW *menu_win, int highlight)
     {
