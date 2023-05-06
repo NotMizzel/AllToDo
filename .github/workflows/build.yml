@@ -1,12 +1,20 @@
 name: Build
-on: [push]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up C++ toolchain
-        uses: actions/setup-cpp@v1
-      - name: Build code
-        run: make
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install build-essential and g++
+      run: sudo apt-get install build-essential g++
+    - name: Build code
+      run: make
