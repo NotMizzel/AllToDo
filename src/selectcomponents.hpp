@@ -28,7 +28,7 @@ namespace selectcomponents {
     {   
         WINDOW *menu_win;
         int c;
-
+        std::string cheese;
         setlocale(LC_CTYPE, "en_US.UTF-8");
         initscr();
         clear();
